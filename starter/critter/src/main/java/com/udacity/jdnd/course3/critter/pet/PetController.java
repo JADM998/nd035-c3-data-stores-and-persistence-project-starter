@@ -1,7 +1,9 @@
 package com.udacity.jdnd.course3.critter.pet;
 
+import com.udacity.jdnd.course3.critter.pet.services.PetService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,23 +13,31 @@ import java.util.List;
 @RequestMapping("/pet")
 public class PetController {
 
+    private final PetService petService;
+
+    public PetController(
+            PetService petService
+    ){
+        this.petService = petService;
+    }
+
     @PostMapping
     public PetDTO savePet(@RequestBody PetDTO petDTO) {
-        throw new UnsupportedOperationException();
+        return petService.create(petDTO);
     }
 
     @GetMapping("/{petId}")
     public PetDTO getPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+        return petService.getById(petId).orElse(null);
     }
 
     @GetMapping
     public List<PetDTO> getPets(){
-        throw new UnsupportedOperationException();
+        return petService.getAll();
     }
 
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
-        throw new UnsupportedOperationException();
+        return petService.getByOwnerId(ownerId);
     }
 }
