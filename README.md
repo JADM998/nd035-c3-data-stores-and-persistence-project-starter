@@ -8,9 +8,15 @@ There are some implementations details that are required for the full project to
 I have used PostgreSQL and have used a non-standard port which was 5434 (instead of 5432).
 
 I have provided a docker image showing the configuration I used, however, 
-if the reviewer had a valid PostgreSQL running only modifying the application.properties spring.datasource.url (port) will make it run.
+if the reviewer had a valid PostgreSQL running only modifying the application.properties for spring.datasource will make it run.
 
 The dockerfile I used is located in `/docker/postgresql-udacity-datastore-and-persistance/docker-compose.yml`.
+
+Also, given that no SQL initiation was provided I also used the configuration:
+spring.sql.init.mode=always
+spring.jpa.hibernate.ddl-auto=create-drop
+
+Once created it could be changed to `embedded` and `validate`.
 
 ## Postman Collection
 
