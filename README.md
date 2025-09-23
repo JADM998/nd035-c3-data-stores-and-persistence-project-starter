@@ -18,6 +18,14 @@ spring.jpa.hibernate.ddl-auto=create-drop
 
 Once created it could be changed to `embedded` and `validate`.
 
+<strong>Note</strong>: I have added support for MySQL, by creating the following:
+1. Created a dockerfile in `/docker/mysql-udacity-datastore-and-persistance/docker-compose.yml`
+2. Added the dependency in pom.xml
+3. Added the spring.datasource.url in `appplication.properties` (commented).
+
+If required, it is as easy as using the docker compose or a mysql DB with a DB named `starter` and switching
+the datasource url in `application.properties`.
+
 ## Postman Collection
 
 There were some bugs in the Postman Collection I provided a minimal changed one and is located in:
@@ -27,6 +35,7 @@ The fixes were:
 1. No call to get employee (which was a POST instead of a GET, I didnt correct it since it was not in the requirements)
 2. No valid JSON body for create Schedule method.
 3. Some ids replaced in other HTTP calls so is possible to run it in one pass (Upper method to lower method).
+4. Improper paths (certain ones were calling customer/owner and failed with the current structure)
 
 ## Tests
 
