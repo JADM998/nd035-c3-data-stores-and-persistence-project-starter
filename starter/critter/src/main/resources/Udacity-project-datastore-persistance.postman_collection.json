@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f7be9419-e668-4360-844b-9bc135e4193d",
+		"_postman_id": "df725f63-0a40-4b92-a4f8-9ac1df863e40",
 		"name": "Udacity-project-datastore-persistance",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "18440225"
@@ -321,7 +321,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8082/schedule/employee/1",
+					"raw": "http://localhost:8082/schedule/customer/1",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -329,7 +329,7 @@
 					"port": "8082",
 					"path": [
 						"schedule",
-						"employee",
+						"customer",
 						"1"
 					]
 				}
