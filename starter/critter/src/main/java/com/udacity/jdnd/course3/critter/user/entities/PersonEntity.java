@@ -11,6 +11,8 @@ import jakarta.persistence.MappedSuperclass;
 //@Entity
 //@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 //Was trying to do it with the annotations above, but it produced the same sequence for both Customer and Employee
+//This means whenever a new Customer or Employee was created it was assigned the next value in the sequence.
+//This is not wrong, but it is preferred to have separated sequence for each one.
 @MappedSuperclass
 public class PersonEntity {
 //    There was an issue about how to use an strategy how id generation, had to consult SO.

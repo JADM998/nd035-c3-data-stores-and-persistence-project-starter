@@ -34,31 +34,25 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleDTO create(ScheduleDTO scheduleDTO){
+    public ScheduleEntity create(ScheduleDTO scheduleDTO){
         var scheduledEntity = populateEntity(new ScheduleEntity(), scheduleDTO);
-        var createdSchedule =  scheduleRepository.save(scheduledEntity);
-        return scheduleMapper.dtoFromEntity(createdSchedule);
+        return scheduleRepository.save(scheduledEntity);
     }
 
-    public List<ScheduleDTO> getAll(){
-        var schedules = scheduleRepository.findAll();
-        return schedules.stream()
-                .map(scheduleMapper::dtoFromEntity).toList();
+    public List<ScheduleEntity> getAll(){
+        return scheduleRepository.findAll();
     }
 
-    public List<ScheduleDTO> getAllFromPet(Long petId){
-        return scheduleRepository.getByPetId(petId).stream()
-                .map(scheduleMapper::dtoFromEntity).toList();
+    public List<ScheduleEntity> getAllFromPet(Long petId){
+        return scheduleRepository.getByPetId(petId);
     }
 
-    public List<ScheduleDTO> getAllFromEmployee(Long employeeId){
-        return scheduleRepository.getByEmployeeId(employeeId).stream()
-                .map(scheduleMapper::dtoFromEntity).toList();
+    public List<ScheduleEntity> getAllFromEmployee(Long employeeId){
+        return scheduleRepository.getByEmployeeId(employeeId);
     }
 
-    public List<ScheduleDTO> getAllFromCustomer(Long customerId){
-        return scheduleRepository.getByCustomerId(customerId).stream()
-                .map(scheduleMapper::dtoFromEntity).toList();
+    public List<ScheduleEntity> getAllFromCustomer(Long customerId){
+        return scheduleRepository.getByCustomerId(customerId);
     }
 
     private ScheduleEntity populateEntity(ScheduleEntity scheduleEntity, ScheduleDTO scheduleDTO){

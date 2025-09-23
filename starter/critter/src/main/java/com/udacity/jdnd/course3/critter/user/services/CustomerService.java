@@ -1,13 +1,14 @@
 package com.udacity.jdnd.course3.critter.user.services;
 
-import com.udacity.jdnd.course3.critter.pet.entities.PetEntity;
-import com.udacity.jdnd.course3.critter.pet.repositories.PetRepository;
 import com.udacity.jdnd.course3.critter.pet.services.PetService;
 import com.udacity.jdnd.course3.critter.user.CustomerDTO;
 import com.udacity.jdnd.course3.critter.user.entities.CustomerEntity;
 import com.udacity.jdnd.course3.critter.user.mappers.CustomerMapper;
 import com.udacity.jdnd.course3.critter.user.repositories.CustomerRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,43 +18,44 @@ public class CustomerService {
     private final CustomerMapper customerMapper;
     private final CustomerRepository customerRepository;
     private final PetService petService;
-    private final PetRepository petRepository;
+    private final Logger logger = LoggerFactory.getLogger(CustomerService.class);
 
     public CustomerService(
             CustomerRepository customerRepository,
             CustomerMapper customerMapper,
-            PetService petService,
-            PetRepository petRepository
+            PetService petService
     ){
         this.customerRepository = customerRepository;
         this.customerMapper = customerMapper;
         this.petService = petService;
-        this.petRepository = petRepository;
     }
 
-    public CustomerDTO create(CustomerDTO customerDTO){
+    public CustomerEntity create(CustomerDTO customerDTO){
         var customer = customerMapper.populateEntityDataFromDto(new CustomerEntity(), customerDTO);
-        var createdCustomer = customerRepository.save(customer);
-        return customerMapper.dtoFromEntity(createdCustomer);
+        return customerRepository.save(customer);
     }
 
-    public List<CustomerDTO> getAll(){
+    public List<CustomerEntity> getAll(){
         var customers = customerRepository.findAll();
-        return customers.stream().map(this::populateCustomerDto).toList();
+        customers.forEach(customerEntity -> {
+            customerEntity.setPets(petService.getByOwnerId(customerEntity.getId()));
+        });
+
+        return customers;
     }
 
-    public Optional<CustomerDTO> getCustomerByPetId(Long petId){
+    public Optional<CustomerEntity> getCustomerByPetId(Long petId){
         var pet = petService.getById(petId);
         if(pet.isEmpty()) return Optional.empty();
 
-        var customer = customerRepository.findById(pet.get().getOwnerId());
-        return customer.map(this::populateCustomerDto);
-    }
+        var customer = customerRepository.findById(pet.get().getOwner().getId());
+        if(customer.isEmpty()) return Optional.empty();
+        var customerEntity = customer.get();
 
-    private CustomerDTO populateCustomerDto(CustomerEntity entity){
-        var customer = this.customerMapper.dtoFromEntity(entity);
-        var pets = petRepository.getByOwnerId(customer.getId());
-        customer.setPetIds(pets.stream().map(PetEntity::getId).toList());
+        //This is necessary since the tests seem to not be able to load the customer.getPets (which is null)
+        //This is a test-only case, in Postman this doesn't happen.
+        customerEntity.setPets(petService.getByOwnerId(customerEntity.getId()));
+
         return customer;
     }
 }

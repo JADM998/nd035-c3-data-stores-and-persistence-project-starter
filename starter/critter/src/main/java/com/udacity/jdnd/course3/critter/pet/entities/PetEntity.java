@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter.pet.entities;
 
 import com.udacity.jdnd.course3.critter.pet.PetType;
 import com.udacity.jdnd.course3.critter.user.entities.CustomerEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -23,6 +24,7 @@ public class PetEntity {
 
     private String name;
     private LocalDate birthDate;
+    @Column(length = 5000)
     private String notes;
 
     @ManyToOne

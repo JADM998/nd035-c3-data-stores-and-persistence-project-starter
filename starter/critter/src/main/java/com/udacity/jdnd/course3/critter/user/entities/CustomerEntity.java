@@ -16,7 +16,7 @@ public class CustomerEntity extends PersonEntity {
     @Column(length = 5000)
     private String notes;
 
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<PetEntity> pets;
 
     public String getPhoneNumber() {

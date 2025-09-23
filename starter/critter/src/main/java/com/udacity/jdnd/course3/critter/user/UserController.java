@@ -1,5 +1,7 @@
 package com.udacity.jdnd.course3.critter.user;
 
+import com.udacity.jdnd.course3.critter.user.mappers.CustomerMapper;
+import com.udacity.jdnd.course3.critter.user.mappers.EmployeeMapper;
 import com.udacity.jdnd.course3.critter.user.services.CustomerService;
 import com.udacity.jdnd.course3.critter.user.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
@@ -20,41 +22,51 @@ import java.util.Set;
 public class UserController {
 
     private final CustomerService customerService;
+    private final CustomerMapper customerMapper;
     private final EmployeeService employeeService;
+    private final EmployeeMapper employeeMapper;
 
     public UserController(
             CustomerService customerService,
-            EmployeeService employeeService
+            CustomerMapper customerMapper,
+            EmployeeService employeeService,
+            EmployeeMapper employeeMapper
     ){
         this.customerService = customerService;
+        this.customerMapper = customerMapper;
         this.employeeService = employeeService;
+        this.employeeMapper = employeeMapper;
     }
 
     @PostMapping("/customer")
     public CustomerDTO saveCustomer(@RequestBody CustomerDTO customerDTO){
-        return customerService.create(customerDTO);
+        var customer = customerService.create(customerDTO);
+        return customerMapper.dtoFromEntity(customer);
     }
 
     @GetMapping("/customer")
     public List<CustomerDTO> getAllCustomers(){
-        return customerService.getAll();
+        var customers = customerService.getAll();
+        return customers.stream().map(
+                customerMapper::dtoFromEntity).toList();
     }
 
     @GetMapping("/customer/pet/{petId}")
     public CustomerDTO getOwnerByPet(@PathVariable long petId){
         var customer = customerService.getCustomerByPetId(petId);
-        return customer.orElse(null);
+        return customer.map(customerMapper::dtoFromEntity).orElse(null);
     }
 
     @PostMapping("/employee")
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        return employeeService.saveEmployee(employeeDTO);
+        var employee = employeeService.saveEmployee(employeeDTO);
+        return employeeMapper.dtoFromEntity(employee);
     }
 
     @PostMapping("/employee/{employeeId}")
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
         var employee = employeeService.getEmployeeById(employeeId);
-        return employee.orElse(null);
+        return employee.map(employeeMapper::dtoFromEntity).orElse(null);
     }
 
     @PutMapping("/employee/{employeeId}")
@@ -64,7 +76,10 @@ public class UserController {
 
     @GetMapping("/employee/availability")
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        return employeeService.findForDateAndActivities(employeeDTO);
+        var employees = employeeService.findForDateAndActivities(employeeDTO);
+
+        return employees.stream().map(
+                employeeMapper::dtoFromEntity).toList();
     }
 
 }

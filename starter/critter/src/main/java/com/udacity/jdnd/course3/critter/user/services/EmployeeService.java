@@ -33,7 +33,7 @@ public class EmployeeService {
     }
 
     @Transactional
-    public EmployeeDTO saveEmployee(EmployeeDTO employeeDTO){
+    public EmployeeEntity saveEmployee(EmployeeDTO employeeDTO){
         var employee = new EmployeeEntity();
         employee.setName(employeeDTO.getName());
 
@@ -42,12 +42,11 @@ public class EmployeeService {
 
         var createdEmployee = employeeRepository.save(employee);
 
-        return employeeMapper.dtoFromEntity(createdEmployee);
+        return createdEmployee;
     }
 
-    public Optional<EmployeeDTO> getEmployeeById(Long employeeId){
-        var employee = employeeRepository.findById(employeeId);
-        return employee.map(employeeMapper::dtoFromEntity);
+    public Optional<EmployeeEntity> getEmployeeById(Long employeeId){
+        return employeeRepository.findById(employeeId);
     }
 
     @Transactional
@@ -65,13 +64,11 @@ public class EmployeeService {
         return true;
     }
 
-    public List<EmployeeDTO> findForDateAndActivities(EmployeeRequestDTO requestDTO){
+    public List<EmployeeEntity> findForDateAndActivities(EmployeeRequestDTO requestDTO){
         var day = DayOfWeek.from(requestDTO.getDate());
 
-        var employees = employeeRepository.getEmployeeByDayAndActivities(
+        return employeeRepository.getEmployeeByDayAndActivities(
                 day, requestDTO.getSkills(), requestDTO.getSkills().size());
-
-        return employees.stream().map(employeeMapper::dtoFromEntity).toList();
     }
 
     private void assignSkillsToEmployeeIfNotNull(EmployeeEntity employee, Set<EmployeeSkill> skills){

@@ -27,28 +27,24 @@ public class PetService {
         this.customerRepository = customerRepository;
     }
 
-    public PetDTO create(PetDTO petDTO){
+    public PetEntity create(PetDTO petDTO){
         var owner = customerRepository.findById(petDTO.getOwnerId()).orElseThrow(
                 () -> new RuntimeException("Couldn't find the owner with id: " + petDTO.getOwnerId()));
 
         var pet = petMapper.populateEntityFromDto(new PetEntity(), petDTO);
         pet.setOwner(owner);
-        var createdPet = petRepository.save(pet);
-        return petMapper.dtoFromEntity(createdPet);
+        return petRepository.save(pet);
     }
 
-    public List<PetDTO> getAll(){
-        return petRepository.findAll().stream()
-                .map(petMapper::dtoFromEntity).toList();
+    public List<PetEntity> getAll(){
+        return petRepository.findAll();
     }
 
-    public Optional<PetDTO> getById(Long petId){
-        var pet = petRepository.findById(petId);
-        return pet.map(petMapper::dtoFromEntity);
+    public Optional<PetEntity> getById(Long petId){
+        return petRepository.findById(petId);
     }
 
-    public List<PetDTO> getByOwnerId(Long ownerId){
-        return petRepository.getByOwnerId(ownerId).stream()
-                .map(petMapper::dtoFromEntity).toList();
+    public List<PetEntity> getByOwnerId(Long ownerId){
+        return petRepository.getByOwnerId(ownerId);
     }
 }
